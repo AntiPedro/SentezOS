@@ -1,0 +1,32 @@
+name: SentezOS CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build-and-compile:
+    name: SentezOS ISO Derleme
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+
+    steps:
+      - name: Kodları Çek
+        uses: actions/checkout@v3
+
+      - name: Arch Linux Araçlarını Kur
+        run: pacman -Syu --noconfirm base-devel cmake qt6-base layer-shell-qt arch-install-scripts archiso
+
+      - name: SentezOS ISO İmajını Üret!
+        run: |
+          echo "SentezOS Bootable ISO inşası başlıyor..."
+          mkarchiso -v -w /tmp/work -o out/ iso-build/
+
+      - name: ISO Dosyasını Hazırla (İndirme Linki)
+        uses: actions/upload-artifact@v3
+        with:
+          name: SentezOS-LiveCD
+          path: out/*.iso
