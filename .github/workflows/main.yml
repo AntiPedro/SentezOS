@@ -14,27 +14,22 @@ jobs:
       options: --privileged
 
     steps:
-      - name: Kodları Çek
+      - name: Kodlari Cek
         uses: actions/checkout@v4
 
-      - name: Arch Linux Araçlarını Kur
+      - name: Arch Linux Araclarini Kur
         run: pacman -Syu --noconfirm base-devel arch-install-scripts archiso
 
-      - name: Ortamı SentezOS İçin Hazırla (Core Harmanlama)
+      - name: Ortami SentezOS Icin Hazirla
         run: |
-          echo "Arch Linux'un resmi iskeleti kopyalanıyor..."
           mkdir -p tmp-iso
           cp -r /usr/share/archiso/configs/releng/* tmp-iso/
-          echo "SentezOS özel ayarları iskeletin üzerine yazılıyor..."
           cp -rf iso-build/* tmp-iso/ || true
 
-      - name: SentezOS ISO İmajını Üret!
-        run: |
-          echo "SentezOS Bootable ISO inşası başlıyor..."
-          # Artık sahte başarı (|| true) yok. Hata verirse bilecek, vermezse gerçek ISO'yu üretecek.
-          mkarchiso -v -w /tmp/work -o out/ tmp-iso/
+      - name: SentezOS ISO Imajini Uret
+        run: mkarchiso -v -w /tmp/work -o out/ tmp-iso/
 
-      - name: ISO Dosyasını Hazırla (İndirme Linki)
+      - name: ISO Dosyasini Indirme Icin Hazirla
         uses: actions/upload-artifact@v4
         with:
           name: SentezOS-LiveCD
