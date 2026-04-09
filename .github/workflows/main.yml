@@ -1,17 +1,24 @@
 name: SentezOS CI/CD Pipeline
-
-on:
-  push:
-      branches: [ "main" ]
-        workflow_dispatch:
-
-        jobs:
-          build-and-compile:
-              name: SentezOS ISO Derleme
-                  runs-on: ubuntu-latest
-                      container:
-                            image: archlinux:latest
-                                  options: --privileged
-
-                                      steps:
-                                            - name: Kodlar
+on: [push, workflow_dispatch]
+jobs:
+  build:
+      runs-on: ubuntu-latest
+          container:
+                image: archlinux:latest
+                      options: --privileged
+                          steps:
+                                - uses: actions/checkout@v4
+                                      - name: Setup archiso
+                                              run: pacman -Syu --noconfirm base-devel archiso
+                                                    - name: Build ISO
+                                                            run: |
+                                                                      mkdir -p /tmp/work out/ profile/
+                                                                                cp -r /usr/share/archiso/configs/releng/* profile/
+                                                                                          cp -rv iso-build/* profile/
+                                                                                                    mkarchiso -v -w /tmp/work -o out/ profile/
+                                                                                                          - name: Upload
+                                                                                                                  uses: actions/upload-artifact@v4
+                                                                                                                          with:
+                                                                                                                                    name: SentezOS-LiveCD
+                                                                                                                                              path: out/*.iso
+                                                                                                                                              
