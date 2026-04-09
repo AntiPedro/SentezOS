@@ -1,4 +1,9 @@
 arch-install-scripts
+syslinux
+memtest86+
+mkinitcpio
+mkinitcpio-archiso
+
 base
 base-devel
 btrfs-progs
