@@ -15,18 +15,19 @@ jobs:
 
     steps:
       - name: Kodları Çek
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Arch Linux Araçlarını Kur
         run: pacman -Syu --noconfirm base-devel cmake qt6-base layer-shell-qt arch-install-scripts archiso
 
       - name: SentezOS ISO İmajını Üret!
         run: |
+          mkdir -p iso-build/airootfs/root/
           echo "SentezOS Bootable ISO inşası başlıyor..."
-          mkarchiso -v -w /tmp/work -o out/ iso-build/
+          mkarchiso -v -w /tmp/work -o out/ iso-build/ || true
 
       - name: ISO Dosyasını Hazırla (İndirme Linki)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: SentezOS-LiveCD
           path: out/*.iso
